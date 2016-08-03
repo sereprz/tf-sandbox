@@ -5,6 +5,9 @@ import tensorflow as tf
 
 from download_data import maybe_download
 
+HEIGHT = 28
+WIDTH = 28
+IMAGE_SIZE = HEIGHT * WIDTH
 N_CLASSES = 10
 N_VALIDATION = 5000
 DATA_DIR = 'datasets'

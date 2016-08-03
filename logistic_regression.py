@@ -2,13 +2,10 @@
 import numpy as np
 import tensorflow as tf
 
-from mnist_utils import load_mnist, N_CLASSES
+from mnist_utils import load_mnist, IMAGE_SIZE, N_CLASSES
 
-HEIGHT = 28
-WIDTH = 28
-IMAGE_SIZE = HEIGHT * WIDTH
 BATCH_SIZE = 200
-EPOCHS = 5
+EPOCHS = 25
 
 # graph
 x = tf.placeholder(dtype=tf.float32, shape=[None, IMAGE_SIZE], name='x')
