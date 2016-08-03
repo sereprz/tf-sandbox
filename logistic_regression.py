@@ -42,8 +42,6 @@ mnist = load_mnist()
 
 train_data = mnist.train.data
 train_target = mnist.train.target
-val_data = mnist.validation.data
-val_target = mnist.validation.target
 
 n_batches = mnist.train.data.shape[0] / BATCH_SIZE
 
@@ -61,8 +59,8 @@ with tf.Session() as sess:
             sess.run(training_step, feed_dict=feed_dict)
 
             if batch % 20 == 0:
-                feed_dict = {x: val_data,
-                             y: val_target}
+                feed_dict = {x: mnist.validation.data,
+                             y: mnist.validation.target}
                 acc = sess.run(accuracy, feed_dict=feed_dict)
                 print 'Step {0}: validation accuracy {1}'.format(batch, acc)
 
