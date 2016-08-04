@@ -3,7 +3,7 @@ import tensorflow as tf
 
 from mnist_utils import N_CLASSES, IMAGE_SIZE, HEIGHT, WIDTH, load_mnist
 
-BATCH_SIZE = 100
+BATCH_SIZE = 50
 EPOCHS = 10
 
 # Input variables placeholders
@@ -34,7 +34,8 @@ with tf.name_scope('conv1') as scope:
         name='shared_weights')
     b = tf.Variable(tf.constant(0.1, shape=[CONV1_OUTPUT_SIZE]),
                     name='shared_biases')
-    x_image = tf.reshape(x, [-1, HEIGHT, WIDTH, 1])
+    x_normal = np.multiply(x, 1.0 / 255.0)
+    x_image = tf.reshape(x_normal, [-1, HEIGHT, WIDTH, 1])
     conv1 = tf.nn.conv2d(x_image, W, strides=[1, 1, 1, 1], padding='SAME')
     h1_conv = tf.nn.relu(conv1 + b)
     h1_pool = tf.nn.max_pool(h1_conv, ksize=[1, POOL_SIZE, POOL_SIZE, 1],
@@ -83,7 +84,7 @@ print '\n\n'
 # loss
 cross_entropy = tf.reduce_mean(
     -tf.reduce_sum(
-        y * tf.log(tf.clip_by_value(y_hat, 1e-20, 1.)),
+        y * tf.log(y_hat),
         reduction_indices=[1]))
 
 # training step
@@ -103,6 +104,7 @@ mnist = load_mnist()
 
 train_data = mnist.train.data
 train_target = mnist.train.target
+print(train_target[0])
 
 n_batches = train_data.shape[0] / BATCH_SIZE
 perm = range(train_data.shape[0])
@@ -111,6 +113,8 @@ print '\nLearning rate {0}\nbatch size {1}'.format(LR, BATCH_SIZE)
 
 with tf.Session() as sess:
     sess.run(init)
+
+    summary_writer = tf.train.SummaryWriter('graph/run1', sess.graph)
 
     for epoch in range(EPOCHS):
         print 'Epoch', epoch + 1
