@@ -4,7 +4,7 @@ import tensorflow as tf
 from mnist_utils import N_CLASSES, IMAGE_SIZE, HEIGHT, WIDTH, load_mnist
 
 BATCH_SIZE = 50
-EPOCHS = 10
+EPOCHS = 2
 
 # Input variables placeholders
 x = tf.placeholder(tf.float32, shape=[None, IMAGE_SIZE], name='x')
@@ -34,8 +34,7 @@ with tf.name_scope('conv1') as scope:
         name='shared_weights')
     b = tf.Variable(tf.constant(0.1, shape=[CONV1_OUTPUT_SIZE]),
                     name='shared_biases')
-    x_normal = np.multiply(x, 1.0 / 255.0)
-    x_image = tf.reshape(x_normal, [-1, HEIGHT, WIDTH, 1])
+    x_image = tf.reshape(x, [-1, HEIGHT, WIDTH, 1])
     conv1 = tf.nn.conv2d(x_image, W, strides=[1, 1, 1, 1], padding='SAME')
     h1_conv = tf.nn.relu(conv1 + b)
     h1_pool = tf.nn.max_pool(h1_conv, ksize=[1, POOL_SIZE, POOL_SIZE, 1],

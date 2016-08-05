@@ -93,6 +93,7 @@ def read_data_sets(dirname, one_hot=False, n_classes=N_CLASSES):
     train_images = extract_images(local_file)
     train_images = train_images.reshape(train_images.shape[0],
                                         train_images.shape[1] * train_images.shape[2])
+    train_images = np.multiply(train_images, 1. / 255.)
 
     local_file = maybe_download(MNIST_URL, TRAIN_LABELS, dirname)
     train_labels = extract_labels(local_file, one_hot, n_classes)
@@ -101,6 +102,7 @@ def read_data_sets(dirname, one_hot=False, n_classes=N_CLASSES):
     test_images = extract_images(local_file)
     test_images = test_images.reshape(test_images.shape[0],
                                       test_images.shape[1] * test_images.shape[2])
+    test_images = np.multiply(test_images, 1. / 255.)
 
     local_file = maybe_download(MNIST_URL, TEST_LABELS, dirname)
     test_labels = extract_labels(local_file, one_hot, n_classes)

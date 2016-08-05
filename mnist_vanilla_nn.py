@@ -27,18 +27,18 @@ with tf.name_scope('softmax'):
     W = tf.Variable(tf.truncated_normal([N_HIDDEN2, N_CLASSES], stddev=0.01),
                     name='weights')
     b = tf.Variable(tf.zeros([N_CLASSES]), name='biases')
-    out = tf.nn.softmax(tf.matmul(hidden2, W) + b)
+    y_hat = tf.nn.softmax(tf.matmul(hidden2, W) + b)
 
 # loss
 cross_entropy = tf.reduce_mean(
-    - tf.reduce_sum(y * tf.log(tf.clip_by_value(out, 1e-10, 1.)),
+    - tf.reduce_sum(y * tf.log(y_hat),
                     reduction_indices=[1]))
 
 # training step
 training_step = tf.train.AdamOptimizer(0.001).minimize(cross_entropy)
 
 # evaluation
-predicted_class = tf.argmax(out, 1)
+predicted_class = tf.argmax(y_hat, 1)
 true_class = tf.argmax(y, 1)
 correct_prediction = tf.equal(predicted_class, true_class)
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, dtype=tf.float32))

@@ -5,7 +5,7 @@ import tensorflow as tf
 from mnist_utils import load_mnist, IMAGE_SIZE, N_CLASSES
 
 BATCH_SIZE = 200
-EPOCHS = 25
+EPOCHS = 2
 
 # graph
 x = tf.placeholder(dtype=tf.float32, shape=[None, IMAGE_SIZE], name='x')
@@ -19,11 +19,11 @@ with tf.name_scope('logistic') as scope:
 
 # loss function
 cross_entropy = tf.reduce_mean(
-    -tf.reduce_sum(y * tf.log(tf.clip_by_value(y_hat, 1e-10, 1.)),
+    -tf.reduce_sum(y * tf.log(y_hat),
                    reduction_indices=[1]))
 
 # train
-training_step = tf.train.GradientDescentOptimizer(learning_rate=0.001).minimize(cross_entropy)
+training_step = tf.train.GradientDescentOptimizer(learning_rate=0.5).minimize(cross_entropy)
 
 # evaluation
 predicted_class = tf.argmax(input=y_hat, dimension=1)
