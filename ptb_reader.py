@@ -5,18 +5,13 @@ import tensorflow as tf
 
 
 def _read_words(filename):
-    '''
-        Returns list of tokens
-    '''
-
+    '''Returns list of tokens'''
     with tf.gfile.Open(filename, 'rb') as f:
         return f.read().replace('\n', '<eos>').split()
 
 
 def _build_vocab(filename):
-    '''
-        Returns word:id dictionary
-    '''
+    '''Returns word:id dictionary'''
     tokens = _read_words(filename)
 
     counter = collections.Counter(tokens)
@@ -29,15 +24,13 @@ def _build_vocab(filename):
 
 
 def _file_to_word_ids(filename, word_to_id):
-    '''
-        lookup words in file
-    '''
+    '''Lookup words in file'''
     data = _read_words(filename)
     return [word_to_id[word] for word in data]
 
 
 def ptb_raw_data(path=None):
-
+    '''Read all ptb files and convert strings to integer ids'''
     train_path = os.path.join(path, 'ptb.train.txt')
     valid_path = os.path.join(path, 'ptb.valid.txt')
     test_path = os.path.join(path, 'ptb.test.txt')
