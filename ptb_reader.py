@@ -44,33 +44,24 @@ def ptb_raw_data(path=None):
     return train_data, valid_data, test_data, vocabulary
 
 
-def ptb_iterator(raw_data, batch_size, n_steps):
+def ptb_batches(raw_data, batch_size, n_steps):
     '''
-        Iterates on the raw PTB data.
-
-        Generates batch_size pointers into the raw PTB data, and allows minibatch
-        iteration along those pointers
-
-        Yields:
-        Pairs of the batched data, each a matrix of shape [batch_size, num_steps].
-        The second element of the tuple is the same data time-shifted to the
-        right by one
+        Generates minibatches
     '''
+    num_batches = len(raw_data) // (batch_size * n_steps)
 
-    raw_data = np.array(raw_data, dtype=np.int32)
+    # cut off last vaues if they don't make a whle batch
+    xdata = np.array(raw_data[:num_batches * batch_size * n_steps])
 
-    data_len = len(raw_data)
-    batch_len = data_len // batch_size
-    data = np.zeros([batch_size, batch_len], dtype=np.int32)
-    for i in range(batch_size):
-        data[i] = raw_data[batch_len * i: batch_len * (i + 1)]
+    # shift xdata by one to the left to predict the next word
+    ydata = np.roll(xdata, -1)
 
-    epoch_size = (batch_len - 1) // n_steps
+    # reshape to [num_batches, n_steps]
+    xdata = xdata.reshape(-1, n_steps)
+    ydata = ydata.reshape(-1, n_steps)
 
-    if epoch_size == 0:
-        raise ValueError('epoch_size == 0, decrease batch_size or num_steps')
+    # list of batches [batch_size, n_steps]
+    x_batches = np.split(xdata, num_batches, 0)
+    y_batches = np.split(ydata, num_batches, 0)
 
-    for i in range(epoch_size):
-        x = data[:, i * n_steps: (i + 1) * n_steps]
-        y = data[:, i * n_steps + 1: (i + 1) * n_steps + 1]
-        yield (x, y)
+    return x_batches, y_batches
